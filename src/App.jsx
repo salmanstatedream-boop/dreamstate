@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Header from './components/Header'
 import StreamingMessage from './components/StreamingMessage'
 import ChatInput from './components/ChatInput'
+import { ToastProvider } from './components/Toast'
 import TypingDots from './components/TypingDots'
 import QuickActions from './components/QuickActions'
 import PropertyCard from './components/PropertyCard'
@@ -45,7 +46,8 @@ const isPropertyList = (text) => {
 }
 
 return (
-<div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 via-indigo-50/20 to-purple-50/10 dark:from-slate-950 dark:via-slate-900 dark:via-slate-900 dark:to-slate-950 transition-colors relative overflow-hidden">
+  <ToastProvider>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 via-indigo-50/20 to-purple-50/10 dark:from-slate-950 dark:via-slate-900 dark:via-slate-900 dark:to-slate-950 transition-colors relative overflow-hidden">
   {/* Premium background pattern */}
   <div className="fixed inset-0 opacity-30 dark:opacity-10 pointer-events-none">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
@@ -197,6 +199,7 @@ className="mt-2 sm:mt-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl round
     setCurrentIntent('dataset_query')
   }
 }} isDark={isDark} />
-</div>
+    </div>
+  </ToastProvider>
 )
 }

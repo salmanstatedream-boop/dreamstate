@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useToast } from './Toast'
 
 export default function StreamingMessage({ text, role = 'bot', timestamp, onComplete, isNewMessage = false, onRetry }) {
   const [displayedText, setDisplayedText] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { showToast } = useToast()
 
   useEffect(() => {
     if (!text) return
@@ -17,15 +19,21 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
     if (onComplete) onComplete()
   }, [text, role, onComplete, isNewMessage])
 
+  useEffect(() => {
+    // entrance animation
+    const t = setTimeout(() => setMounted(true), 20)
+    return () => clearTimeout(t)
+  }, [])
+
   const isUser = role === 'user'
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(displayedText || text || '')
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      showToast('Copied to clipboard', 'success')
     } catch (e) {
       console.warn('Copy failed', e)
+      showToast('Copy failed', 'error')
     }
   }
 
@@ -33,10 +41,17 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
     if (onRetry) onRetry()
   }
 
+  const handleRetryWithToast = () => {
+    if (onRetry) {
+      showToast('Regenerating response...', 'info')
+      onRetry()
+    }
+  }
+
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full mb-1`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full mb-1`}> 
       <div
-        className={`relative group ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bot bg-gradient-to-br from-white to-slate-50/80 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100 shadow-md shadow-slate-200/50 dark:shadow-black/20'} rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3.5 sm:py-4 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] border ${isUser ? 'border-blue-400/30 ring-1 ring-blue-300/20' : 'border-slate-200/60 dark:border-slate-700/40 ring-1 ring-slate-100/50 dark:ring-slate-800/50'} break-words backdrop-blur-sm transition-all duration-200 hover:shadow-lg`}
+        className={`relative group ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bot bg-gradient-to-br from-white to-slate-50/80 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100 shadow-md shadow-slate-200/50 dark:shadow-black/20'} rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3.5 sm:py-4 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] border ${isUser ? 'border-blue-400/30 ring-1 ring-blue-300/20' : 'border-slate-200/60 dark:border-slate-700/40 ring-1 ring-slate-100/50 dark:ring-slate-800/50'} break-words backdrop-blur-sm transition-all duration-200 hover:shadow-lg ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
       >
         {/* Action buttons: copy, retry */}
         <div className="absolute top-3 right-3 flex items-center gap-2 z-20 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-150">
@@ -53,7 +68,7 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
           </div>
 
           {onRetry && (
-            <button onClick={handleRetry} title="Regenerate / Retry" aria-label="Retry message" className="w-9 h-9 rounded-full flex items-center justify-center bg-white/90 dark:bg-slate-800/75 border border-white/60 dark:border-slate-700/40 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all">
+            <button onClick={handleRetryWithToast} title="Regenerate / Retry" aria-label="Retry message" className="w-9 h-9 rounded-full flex items-center justify-center bg-white/90 dark:bg-slate-800/75 border border-white/60 dark:border-slate-700/40 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-4 h-4 text-slate-700 dark:text-slate-100">
                 <path d="M21 12a9 9 0 1 1-3.4-7.1" />
                 <polyline points="21 3 21 9 15 9" />
