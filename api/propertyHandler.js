@@ -232,28 +232,36 @@ function makeRecords(rows, headers) {
 function extractPropertyDetails(record, headers) {
   const unit = record["Unit #"] || "";
   const title = record["Title on Listing's Site"] || "";
-  const price = record[headers[findColumnIndex(headers, "Price")]] || "";
-  const type = record[headers[findColumnIndex(headers, "Type")]] || "";
-  const bedBath = record[headers[findColumnIndex(headers, "Bed x Bath")]] || "";
-  const maxGuests = record[headers[findColumnIndex(headers, "Max Guests")]] || "";
-  const rating = record[headers[findColumnIndex(headers, "Airbnb Rating")]] || "";
+  const priceCol = findColumnIndex(headers, "Price");
+  const price = priceCol !== -1 ? record[headers[priceCol]] : "";
+  const typeCol = findColumnIndex(headers, "Type");
+  const type = typeCol !== -1 ? record[headers[typeCol]] : "";
+  const bedBathCol = findColumnIndex(headers, "Bed x Bath");
+  const bedBath = bedBathCol !== -1 ? record[headers[bedBathCol]] : "";
+  const maxGuestsCol = findColumnIndex(headers, "Max Guests");
+  const maxGuests = maxGuestsCol !== -1 ? record[headers[maxGuestsCol]] : "";
+  const ratingCol = findColumnIndex(headers, "Airbnb Rating");
+  const rating = ratingCol !== -1 ? record[headers[ratingCol]] : "";
+  
   const poolCol = findColumnIndex(headers, "Pool and Hot tube");
   const cameraCol = findColumnIndex(headers, "Camera Location");
+  const wifiCol = findColumnIndex(headers, "Wifi Login");
+  
   const hasPool = poolCol !== -1 && record[headers[poolCol]] && String(record[headers[poolCol]]).trim() !== "";
   const hasCamera = cameraCol !== -1 && record[headers[cameraCol]] && String(record[headers[cameraCol]]).trim() !== "";
-  const hasWifi = record[headers[findColumnIndex(headers, "Wifi Login")]] && String(record[headers[findColumnIndex(headers, "Wifi Login")]]).trim() !== "";
+  const hasWifi = wifiCol !== -1 && record[headers[wifiCol]] && String(record[headers[wifiCol]]).trim() !== "";
 
   return {
     unit: String(unit).trim(),
     title: String(title).trim(),
-    price: String(price).replace(/[^\d.]/g, "").trim(),
+    price: String(price).replace(/[^\d.]/g, "").trim() || "0",
     type: String(type).toLowerCase().trim(),
     bedBath: String(bedBath).trim(),
     maxGuests: String(maxGuests).trim(),
     rating: String(rating).trim(),
-    hasPool,
-    hasCamera,
-    hasWifi,
+    hasPool: !!hasPool,
+    hasCamera: !!hasCamera,
+    hasWifi: !!hasWifi,
   };
 }
 
@@ -722,7 +730,7 @@ async function handleDatasetQuery(extracted) {
           propertiesByArea[areaKey] = [];
         }
         const details = extractPropertyDetails(rec, headers);
-        propertiesByArea[areaKey].push(details);
+        propertiesByArea[areaKey].push({ ...details, area: areaKey });
       }
 
       if (Object.keys(propertiesByArea).length === 0) {

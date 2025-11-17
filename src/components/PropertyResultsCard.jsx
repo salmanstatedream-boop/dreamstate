@@ -27,11 +27,11 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
   return (
     <div className="space-y-4">
       {/* Filter Row */}
-      <div className="flex flex-wrap gap-2 pb-3 border-b border-slate-200/60 dark:border-slate-700/60">
+      <div className="flex flex-wrap gap-2 pb-4 border-b border-slate-200/60 dark:border-slate-700/60">
         {/* All Properties Button */}
         <button
           onClick={() => setActiveFilter('all')}
-          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ${
+          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 whitespace-nowrap ${
             activeFilter === 'all'
               ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
               : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
@@ -44,7 +44,7 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
         {filters.hasPool && (
           <button
             onClick={() => setActiveFilter('pool')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap ${
               activeFilter === 'pool'
                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
                 : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
@@ -59,7 +59,7 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
         {filters.hasCamera && (
           <button
             onClick={() => setActiveFilter('camera')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap ${
               activeFilter === 'camera'
                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
                 : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
@@ -75,7 +75,7 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
           <button
             key={type}
             onClick={() => setActiveFilter(type)}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ${
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 whitespace-nowrap ${
               activeFilter === type
                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
                 : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
@@ -169,9 +169,9 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
               </div>
 
               {/* Area Badge */}
-              {area && (
+              {(prop.area || area) && (
                 <div className="mb-3 text-xs text-slate-600 dark:text-slate-400">
-                  📍 <span className="font-semibold text-slate-900 dark:text-slate-200">{area}</span>
+                  📍 <span className="font-semibold text-slate-900 dark:text-slate-200">{prop.area || area}</span>
                 </div>
               )}
 
