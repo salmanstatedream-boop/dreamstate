@@ -117,12 +117,12 @@ const toggleListening = () => {
 
 return (
 	<>
-		<div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white/95 dark:from-slate-900/95 via-white/90 dark:via-slate-900/90 to-transparent pt-5 pb-4 sm:pb-5 md:pb-6 border-t border-slate-200/60 dark:border-slate-700/40 backdrop-blur-xl">
-<div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6">
-<div className="flex items-end gap-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/5 dark:shadow-black/20 hover:shadow-2xl hover:shadow-black/10 dark:hover:shadow-black/30 transition-all duration-300 p-3 sm:p-4 border border-slate-200/60 dark:border-slate-700/50 backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/5"
+	<div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white/95 dark:from-slate-900/95 via-white/90 dark:via-slate-900/90 to-transparent pt-3 pb-3 sm:pb-4 border-t border-slate-200/50 dark:border-slate-700/40 backdrop-blur-xl">
+<div className="mx-auto w-full max-w-5xl px-3 sm:px-4 lg:px-6">
+<div className="flex items-end gap-2 bg-white/80 dark:bg-slate-800/80 rounded-xl shadow-lg shadow-black/5 dark:shadow-black/20 hover:shadow-lg hover:shadow-black/8 dark:hover:shadow-black/25 transition-all duration-200 p-2 sm:p-3 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/5">
 >
 <textarea
-className="flex-1 resize-none outline-none p-3 sm:p-4 rounded-xl h-12 sm:h-14 max-h-32 sm:max-h-40 text-sm sm:text-base bg-slate-50/80 dark:bg-slate-700/40 hover:bg-slate-100/80 dark:hover:bg-slate-600/50 focus:bg-white dark:focus:bg-slate-700/80 transition-all duration-200 placeholder-slate-400 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100 border border-slate-200/50 dark:border-slate-600/30 focus:border-blue-400/50 dark:focus:border-blue-500/50 focus:ring-2 focus:ring-blue-400/20 dark:focus:ring-blue-500/20"
+className="flex-1 resize-none outline-none p-2 rounded-lg h-10 max-h-28 text-sm bg-slate-50/80 dark:bg-slate-700/40 hover:bg-slate-100/80 dark:hover:bg-slate-600/50 focus:bg-white dark:focus:bg-slate-700/80 transition-all duration-200 placeholder-slate-400 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100 border border-slate-200/40 dark:border-slate-600/30 focus:border-blue-400/50 dark:focus:border-blue-500/50 focus:ring-2 focus:ring-blue-400/20 dark:focus:ring-blue-500/20"
 placeholder="Ask about properties, pricing, amenities..."
 value={value}
 onChange={(e) => setValue(e.target.value)}
@@ -135,7 +135,7 @@ rows={1}
 	type="button"
 	aria-pressed={listening}
 	aria-label={listening ? 'Stop recording' : 'Start voice input'}
-	className={`shrink-0 inline-flex items-center justify-center rounded-xl sm:rounded-2xl px-3 h-12 sm:h-14 text-sm font-medium transition-all duration-150 ${listening ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' : 'bg-slate-100 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 border border-slate-200/50 dark:border-slate-600/30'}`}
+	className={`shrink-0 inline-flex items-center justify-center rounded-lg px-2 h-9 w-9 text-sm font-medium transition-all duration-150 ${listening ? 'bg-red-500 text-white shadow-md shadow-red-500/30' : 'bg-slate-100 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 border border-slate-200/40 dark:border-slate-600/30'}`}
 >
 	{listening ? (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 animate-pulse">
@@ -152,7 +152,7 @@ rows={1}
 <button
 onClick={handleSend}
 disabled={sending || !value.trim()}
-className="shrink-0 inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-4 sm:px-5 h-12 sm:h-14 text-sm font-bold hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 disabled:from-slate-300 disabled:via-slate-400 disabled:to-slate-400 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 ring-2 ring-blue-400/20 disabled:ring-0"
+className="shrink-0 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white px-3 h-9 text-sm font-semibold hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 disabled:from-slate-300 disabled:via-slate-400 disabled:to-slate-400 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 ring-1 ring-blue-400/20 disabled:ring-0"
 aria-label="Send message"
 >
 {sending ? (
@@ -169,7 +169,7 @@ aria-label="Send message"
 		</div>
 		</div>
 		{!supportsSpeech && (
-			<div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 mt-1">
+			<div className="mx-auto w-full max-w-5xl px-3 sm:px-4 lg:px-6 mt-1">
 				<div className="text-xs text-slate-500 dark:text-slate-400">Voice input not supported in this browser. Try Chrome or Edge for best results.</div>
 			</div>
 		)}

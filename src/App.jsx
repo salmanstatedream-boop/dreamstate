@@ -57,10 +57,10 @@ return (
 
 <Header isDark={isDark} onToggleDark={toggleDark} />
 
-<main className="flex-1 mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 pb-24 sm:pb-32 md:pb-36 pt-2 sm:pt-4 relative z-10">
+<main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28 pt-1 relative z-10">
 <div
 ref={listRef}
-className="mt-2 sm:mt-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl rounded-3xl sm:rounded-[2rem] shadow-2xl shadow-blue-500/5 dark:shadow-black/20 p-5 sm:p-7 lg:p-9 min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-14rem)] max-h-[calc(100vh-12rem)] sm:max-h-[calc(100vh-14rem)] overflow-y-auto border border-white/20 dark:border-slate-700/50 scroll-smooth will-change-scroll ring-1 ring-black/5 dark:ring-white/5"
+className="mt-1 bg-white/80 dark:bg-slate-900/75 backdrop-blur-2xl rounded-2xl shadow-md p-4 sm:p-6 min-h-[calc(100vh-10rem)] sm:min-h-[calc(100vh-12rem)] max-h-[calc(100vh-10rem)] sm:max-h-[calc(100vh-12rem)] overflow-y-auto border border-white/10 dark:border-slate-700/40 scroll-smooth will-change-scroll ring-1 ring-black/5 dark:ring-white/5"
 >
 {messages.length === 0 && !isLoading && (
 <EmptyState onSelect={(question) => {

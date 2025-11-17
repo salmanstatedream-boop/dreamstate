@@ -49,9 +49,9 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
   }
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full mb-1`}> 
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full mb-2`}> 
       <div
-        className={`relative group ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bot bg-gradient-to-br from-white to-slate-50/80 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100 shadow-md shadow-slate-200/50 dark:shadow-black/20'} rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3.5 sm:py-4 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] border ${isUser ? 'border-blue-400/30 ring-1 ring-blue-300/20' : 'border-slate-200/60 dark:border-slate-700/40 ring-1 ring-slate-100/50 dark:ring-slate-800/50'} break-words backdrop-blur-sm transition-all duration-200 hover:shadow-lg ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+        className={`relative group ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white' : 'bot bg-gradient-to-br from-white to-slate-50/90 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100'} rounded-xl px-4 py-2.5 max-w-[82%] sm:max-w-[72%] md:max-w-[66%] border ${isUser ? 'border-blue-400/20' : 'border-slate-200/40 dark:border-slate-700/30'} break-words backdrop-blur-sm transition-all duration-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
       >
         {/* Action buttons: copy, retry */}
         <div className="absolute top-3 right-3 flex items-center gap-2 z-20 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-150">
@@ -74,12 +74,12 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
             </button>
           )}
         </div>
-        <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-strong:font-semibold prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl prose-pre:p-4 prose-pre:overflow-x-auto prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs prose-a:text-blue-500 prose-a:font-medium hover:prose-a:underline">
+        <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-p:leading-snug prose-strong:font-semibold prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-lg prose-pre:p-3 prose-pre:overflow-x-auto prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs prose-a:text-blue-500 prose-a:font-medium hover:prose-a:underline">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             skipHtml
             components={{
-              p: ({ node, ...props }) => <p className="whitespace-pre-wrap leading-relaxed text-sm sm:text-base" {...props} />,
+              p: ({ node, ...props }) => <p className="whitespace-pre-wrap leading-snug text-sm" {...props} />,
               a: ({ node, ...props }) => (
                 <a target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300" {...props} />
               ),
@@ -99,7 +99,7 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
         )}
 
         {timestamp && (
-          <div className={`mt-2 text-[10px] font-medium ${isUser ? 'text-white/60' : 'text-slate-400 dark:text-slate-500'}`}>
+          <div className={`mt-1 text-[11px] font-medium ${isUser ? 'text-white/70' : 'text-slate-400 dark:text-slate-500'}`}>
             {timestamp}
           </div>
         )}
