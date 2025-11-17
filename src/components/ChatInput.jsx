@@ -5,6 +5,7 @@ const [value, setValue] = useState('')
 const [sending, setSending] = useState(false)
 const [listening, setListening] = useState(false)
 const recognitionRef = useRef(null)
+const [supportsSpeech, setSupportsSpeech] = useState(true)
 
 const handleSend = async () => {
 const message = value.trim()
@@ -28,6 +29,7 @@ handleSend()
 useEffect(() => {
 	// Initialize SpeechRecognition if available
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+	setSupportsSpeech(Boolean(SpeechRecognition))
 	if (!SpeechRecognition) return
 
 	const recog = new SpeechRecognition()
@@ -165,5 +167,10 @@ aria-label="Send message"
 </div>
 </div>
 </div>
+{!supportsSpeech && (
+	<div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 mt-1">
+		<div className="text-xs text-slate-500 dark:text-slate-400">Voice input not supported in this browser. Try Chrome or Edge for best results.</div>
+	</div>
+)}
 )
 }

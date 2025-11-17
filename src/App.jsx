@@ -70,7 +70,7 @@ className="mt-2 sm:mt-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl round
   }
 }} />
 )}
-<div className="space-y-4">
+<div className="space-y-4" role="log" aria-live="polite" aria-atomic="false">
 {messages.map((m, index) => {
   const isNewMessage = index === messages.length - 1
   
@@ -118,26 +118,39 @@ className="mt-2 sm:mt-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl round
     }
   }
   
-  return (
-    <div key={m.id}>
-      <StreamingMessage 
-        role={m.role} 
-        text={m.text} 
-        timestamp={m.timestamp}
-        isNewMessage={isNewMessage}
-        onComplete={() => {
-          // Update intent based on response
-          if (m.role === 'bot' && m.text) {
-            if (m.text.includes('property') || m.text.includes('Unit')) {
-              setCurrentIntent('property_query')
-            } else if (m.text.includes('properties') || m.text.includes('Which')) {
-              setCurrentIntent('dataset_query')
+    return (
+      <div key={m.id} aria-label={`${m.role} message`}> 
+        <StreamingMessage 
+          role={m.role} 
+          text={m.text} 
+          timestamp={m.timestamp}
+          isNewMessage={isNewMessage}
+          onComplete={() => {
+            // Update intent based on response
+            if (m.role === 'bot' && m.text) {
+              if (m.text.includes('property') || m.text.includes('Unit')) {
+                setCurrentIntent('property_query')
+              } else if (m.text.includes('properties') || m.text.includes('Which')) {
+                setCurrentIntent('dataset_query')
+              }
             }
-          }
-        }}
-      />
-    </div>
-  )
+          }}
+          onRetry={() => {
+            // Find the most recent user message before this bot message and resend it
+            let prevUser = null
+            for (let i = index - 1; i >= 0; i--) {
+              if (messages[i].role === 'user') {
+                prevUser = messages[i].text
+                break
+              }
+            }
+            if (prevUser) {
+              sendMessage(prevUser)
+            }
+          }}
+        />
+      </div>
+    )
 })}
 </div>
 
