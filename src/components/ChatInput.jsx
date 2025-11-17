@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 export default function ChatInput({ onSend, isDark = false }) {
 const [value, setValue] = useState('')
 const [sending, setSending] = useState(false)
+const [listening, setListening] = useState(false)
+const recognitionRef = useRef(null)
 
 const handleSend = async () => {
 const message = value.trim()
@@ -23,6 +25,94 @@ handleSend()
 }
 }
 
+useEffect(() => {
+	// Initialize SpeechRecognition if available
+	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+	if (!SpeechRecognition) return
+
+	const recog = new SpeechRecognition()
+	recog.continuous = false
+	recog.interimResults = true
+	recog.lang = navigator.language || 'en-US'
+
+	recog.onresult = (event) => {
+		let interim = ''
+		let final = ''
+		for (let i = event.resultIndex; i < event.results.length; ++i) {
+			const transcript = event.results[i][0].transcript
+			if (event.results[i].isFinal) final += transcript
+			else interim += transcript
+		}
+		// Show interim transcript while speaking, then final when available
+		setValue((prev) => {
+			// If final exists, replace with final; else show interim appended to previous non-speech text
+			if (final) {
+				if (recognitionRef.current) recognitionRef.current.lastTranscript = final
+				return final
+			}
+			if (interim) {
+				if (recognitionRef.current) recognitionRef.current.lastTranscript = interim
+				return interim
+			}
+			return prev
+		})
+	}
+
+	recog.onend = () => {
+		setListening(false)
+		// Auto-send if there's any text captured
+		if (recognitionRef.current && recognitionRef.current.lastTranscript && recognitionRef.current.lastTranscript.trim()) {
+			const textToSend = recognitionRef.current.lastTranscript.trim()
+			// clear stored transcript
+			recognitionRef.current.lastTranscript = ''
+			// send message
+			handleSendVoice(textToSend)
+		}
+	}
+
+	recog.onerror = (err) => {
+		console.error('SpeechRecognition error', err)
+		setListening(false)
+	}
+
+	recognitionRef.current = recog
+
+	return () => {
+		try { recog.stop() } catch (e) {}
+		recognitionRef.current = null
+	}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [])
+
+const handleSendVoice = async (text) => {
+	if (!text) return
+	setSending(true)
+	setValue('')
+	try {
+		await onSend(text)
+	} finally {
+		setSending(false)
+	}
+}
+
+const toggleListening = () => {
+	const recog = recognitionRef.current
+	if (!recog) {
+		console.warn('SpeechRecognition not supported in this browser')
+		return
+	}
+
+	if (listening) {
+		try { recog.stop() } catch (e) { console.warn(e) }
+		setListening(false)
+	} else {
+		// reset lastTranscript holder
+		recognitionRef.current.lastTranscript = ''
+		recog.start()
+		setListening(true)
+	}
+}
+
 return (
 <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white/95 dark:from-slate-900/95 via-white/90 dark:via-slate-900/90 to-transparent pt-5 pb-4 sm:pb-5 md:pb-6 border-t border-slate-200/60 dark:border-slate-700/40 backdrop-blur-xl">
 <div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6">
@@ -36,6 +126,26 @@ onChange={(e) => setValue(e.target.value)}
 onKeyDown={handleKeyDown}
 rows={1}
 />
+{/* Microphone button */}
+<button
+	onClick={toggleListening}
+	type="button"
+	aria-pressed={listening}
+	aria-label={listening ? 'Stop recording' : 'Start voice input'}
+	className={`shrink-0 inline-flex items-center justify-center rounded-xl sm:rounded-2xl px-3 h-12 sm:h-14 text-sm font-medium transition-all duration-150 ${listening ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' : 'bg-slate-100 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 border border-slate-200/50 dark:border-slate-600/30'}`}
+>
+	{listening ? (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 animate-pulse">
+			<path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z" />
+			<path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 5 5 0 0 0 4 4.9V19a1 1 0 1 0 2 0v-3.1A5 5 0 0 0 19 11z" />
+		</svg>
+	) : (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+			<path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z" />
+			<path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 5 5 0 0 0 4 4.9V19a1 1 0 1 0 2 0v-3.1A5 5 0 0 0 19 11z" />
+		</svg>
+	)}
+</button>
 <button
 onClick={handleSend}
 disabled={sending || !value.trim()}
