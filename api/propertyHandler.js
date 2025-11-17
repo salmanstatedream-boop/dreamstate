@@ -173,20 +173,36 @@ function matchProperty(propertyName, rows, headers) {
     const unitRaw = row[unitIndex] || "";
     const titleRaw = row[titleIndex] || "";
     
-    // Exact match on unit or title
-    if (unit === target || title === target) {
+    // Priority 1: Exact unit match (most important)
+    if (unit === target) {
       return { match: row, suggestions: [] };
     }
     
-    // Check if target is just the unit number (e.g., "1679" matches unit "1679")
-    if (target === unit || (target.match(/^\d+$/) && unit === target)) {
+    // Priority 2: Check if target is just a unit number that matches
+    if (target.match(/^\d+$/) && unit === target) {
       return { match: row, suggestions: [] };
     }
     
-    // Fuzzy matching
+    // Priority 3: Check if target is digits and matches beginning of unit
+    if (target.match(/^\d+$/) && unit.startsWith(target)) {
+      if (bestScore < 0.95) {
+        bestScore = 0.95;
+        bestMatch = row;
+      }
+      continue;
+    }
+    
+    // Priority 4: Fuzzy matching on unit first, then title
     const unitScore = fuzzyMatch(target, unit);
-    const titleScore = fuzzyMatch(target, title);
-    const score = Math.max(unitScore, titleScore);
+    
+    // Only consider title match if unit score is very low
+    let score = unitScore;
+    if (unitScore < 0.3) {
+      const titleScore = fuzzyMatch(target, title);
+      score = titleScore;
+    } else {
+      score = unitScore;
+    }
     
     if (score > bestScore) {
       bestScore = score;

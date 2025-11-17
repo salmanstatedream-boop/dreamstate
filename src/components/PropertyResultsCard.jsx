@@ -112,15 +112,20 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
                     </span>
                   )}
                   {prop.title && (
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 break-words leading-tight">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-50 break-words leading-tight mb-1">
                       {prop.title}
                     </h4>
                   )}
+                  {prop.bedBath && (
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-1">
+                      {prop.bedBath}
+                    </p>
+                  )}
                 </div>
                 {prop.rating && (
-                  <div className="flex items-center gap-1 px-3 py-1 bg-yellow-100/80 dark:bg-yellow-900/30 rounded-lg flex-shrink-0">
+                  <div className="flex items-center gap-1 px-3 py-1 bg-yellow-100/80 dark:bg-yellow-900/40 rounded-lg flex-shrink-0 whitespace-nowrap">
                     <span className="text-yellow-500 dark:text-yellow-400">⭐</span>
-                    <span className="text-xs sm:text-sm font-bold text-yellow-700 dark:text-yellow-300">
+                    <span className="text-xs sm:text-sm font-bold text-yellow-700 dark:text-yellow-200">
                       {prop.rating}
                     </span>
                   </div>
@@ -130,27 +135,21 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
               {/* Property Details */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-xs sm:text-sm">
                 {prop.price && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/40 p-2 rounded-lg">
-                    <span className="text-slate-600 dark:text-slate-400 block text-xs mb-0.5">Price</span>
-                    <span className="font-bold text-blue-600 dark:text-blue-400">${prop.price}/night</span>
+                  <div className="bg-slate-50/80 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200/40 dark:border-slate-600/40">
+                    <span className="text-slate-600 dark:text-slate-300 block text-xs mb-0.5 font-medium">Price</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-300">${prop.price}/night</span>
                   </div>
                 )}
                 {prop.type && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/40 p-2 rounded-lg">
-                    <span className="text-slate-600 dark:text-slate-400 block text-xs mb-0.5">Type</span>
-                    <span className="font-bold text-slate-900 dark:text-slate-200 capitalize">{prop.type}</span>
-                  </div>
-                )}
-                {prop.bedBath && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/40 p-2 rounded-lg">
-                    <span className="text-slate-600 dark:text-slate-400 block text-xs mb-0.5">Beds/Bath</span>
-                    <span className="font-bold text-slate-900 dark:text-slate-200">{prop.bedBath}</span>
+                  <div className="bg-slate-50/80 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200/40 dark:border-slate-600/40">
+                    <span className="text-slate-600 dark:text-slate-300 block text-xs mb-0.5 font-medium">Type</span>
+                    <span className="font-bold text-slate-900 dark:text-slate-100 capitalize">{prop.type}</span>
                   </div>
                 )}
                 {prop.maxGuests && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/40 p-2 rounded-lg">
-                    <span className="text-slate-600 dark:text-slate-400 block text-xs mb-0.5">Guests</span>
-                    <span className="font-bold text-slate-900 dark:text-slate-200">Max {prop.maxGuests}</span>
+                  <div className="bg-slate-50/80 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200/40 dark:border-slate-600/40">
+                    <span className="text-slate-600 dark:text-slate-300 block text-xs mb-0.5 font-medium">Guests</span>
+                    <span className="font-bold text-slate-900 dark:text-slate-100">Max {prop.maxGuests}</span>
                   </div>
                 )}
               </div>
@@ -178,8 +177,8 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
 
               {/* Area Badge */}
               {(prop.area || area) && (
-                <div className="mb-3 text-xs text-slate-600 dark:text-slate-400">
-                  📍 <span className="font-semibold text-slate-900 dark:text-slate-200">{prop.area || area}</span>
+                <div className="mb-3 text-xs text-slate-600 dark:text-slate-300 py-1 px-2 rounded-lg bg-slate-50/50 dark:bg-slate-700/30 border border-slate-200/40 dark:border-slate-600/40">
+                  📍 <span className="font-semibold text-slate-900 dark:text-slate-100">{prop.area || area}</span>
                 </div>
               )}
 
@@ -188,19 +187,19 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
                 <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200/50 dark:border-slate-700/50">
                   <button
                     onClick={() => onQuickAction(`WiFi password for unit ${prop.unit}`)}
-                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-slate-100/70 dark:bg-slate-700/50 hover:bg-slate-200/70 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
+                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-blue-50/80 dark:bg-blue-900/40 hover:bg-blue-100/80 dark:hover:bg-blue-800/50 text-blue-700 dark:text-blue-200 rounded-lg transition-all duration-200 active:scale-95 border border-blue-200/60 dark:border-blue-700/40"
                   >
                     📶 WiFi
                   </button>
                   <button
                     onClick={() => onQuickAction(`Does unit ${prop.unit} have parking?`)}
-                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-slate-100/70 dark:bg-slate-700/50 hover:bg-slate-200/70 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
+                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-slate-100/80 dark:bg-slate-700/50 hover:bg-slate-200/80 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/60 dark:border-slate-600/40"
                   >
                     🚗 Parking
                   </button>
                   <button
                     onClick={() => onQuickAction(`Tell me more about unit ${prop.unit}`)}
-                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-blue-100/70 dark:bg-blue-900/30 hover:bg-blue-200/70 dark:hover:bg-blue-800/40 text-blue-700 dark:text-blue-300 rounded-lg transition-all duration-200 active:scale-95 border border-blue-200/50 dark:border-blue-700/50"
+                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-indigo-50/80 dark:bg-indigo-900/40 hover:bg-indigo-100/80 dark:hover:bg-indigo-800/50 text-indigo-700 dark:text-indigo-200 rounded-lg transition-all duration-200 active:scale-95 border border-indigo-200/60 dark:border-indigo-700/40"
                   >
                     ℹ️ Details
                   </button>
