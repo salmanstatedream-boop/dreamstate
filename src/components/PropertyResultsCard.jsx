@@ -3,10 +3,16 @@ import { useState, useMemo, useCallback } from 'react'
 export default function PropertyResultsCard({ properties = [], area, onQuickAction }) {
   const [activeFilter, setActiveFilter] = useState('all')
 
-  // Validate properties array
+  // Validate properties array and ensure unit is clean number
   const validProperties = useMemo(() => {
     if (!Array.isArray(properties)) return []
-    return properties.filter(p => p && typeof p === 'object')
+    return properties.filter(p => p && typeof p === 'object' && p.unit).map(p => ({
+      ...p,
+      // Ensure unit is just the number part
+      unit: String(p.unit).split(/[^\d]/)[0] || p.unit,
+      // Use address if available, otherwise fall back to title
+      displayAddress: (p.address || p.title || '').trim()
+    }))
   }, [properties])
 
   // Extract unique filters from properties
@@ -102,54 +108,68 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
           filteredProperties.map((prop, idx) => (
             <div
               key={`${prop.unit}-${idx}`}
-              className="group p-4 sm:p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all duration-200 hover:border-blue-300/50 dark:hover:border-blue-600/30"
+              className="group p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex-1 min-w-0">
-                  {prop.unit && (
-                    <span className="inline-block px-3 py-1 text-xs font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg mb-2 shadow-md shadow-blue-500/20">
-                      Unit {prop.unit}
-                    </span>
-                  )}
-                  {prop.title && (
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-50 break-words leading-tight mb-1">
-                      {prop.title}
-                    </h4>
-                  )}
-                  {prop.bedBath && (
-                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-1">
-                      {prop.bedBath}
-                    </p>
-                  )}
-                </div>
+              {/* Header: Unit Badge + Rating */}
+              <div className="flex items-center justify-between gap-3 mb-3">
+                {prop.unit && (
+                  <span className="inline-block px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow-sm whitespace-nowrap">
+                    Unit {prop.unit}
+                  </span>
+                )}
                 {prop.rating && (
-                  <div className="flex items-center gap-1 px-3 py-1 bg-yellow-100/80 dark:bg-yellow-900/40 rounded-lg flex-shrink-0 whitespace-nowrap">
-                    <span className="text-yellow-500 dark:text-yellow-400">⭐</span>
-                    <span className="text-xs sm:text-sm font-bold text-yellow-700 dark:text-yellow-200">
+                  <div className="flex items-center gap-1 px-2 py-1 bg-yellow-100/70 dark:bg-yellow-900/40 rounded-md flex-shrink-0 whitespace-nowrap">
+                    <span className="text-yellow-500 dark:text-yellow-400 text-sm">⭐</span>
+                    <span className="text-xs font-semibold text-yellow-700 dark:text-yellow-200">
                       {prop.rating}
                     </span>
                   </div>
                 )}
               </div>
 
-              {/* Property Details */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-xs sm:text-sm">
+              {/* Address/Title */}
+              {prop.displayAddress && (
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-2 leading-snug">
+                  {prop.displayAddress}
+                </h4>
+              )}
+
+              {/* Type + Bed x Bath */}
+              {(prop.type || prop.bedBath) && (
+                <div className="flex flex-wrap gap-2 mb-3 text-xs">
+                  {prop.type && (
+                    <span className="px-2 py-1 bg-slate-100/70 dark:bg-slate-700/40 text-slate-700 dark:text-slate-300 rounded capitalize font-medium">
+                      {prop.type}
+                    </span>
+                  )}
+                  {prop.bedBath && (
+                    <span className="px-2 py-1 bg-slate-100/70 dark:bg-slate-700/40 text-slate-700 dark:text-slate-300 rounded font-medium">
+                      {prop.bedBath}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Key Details Grid */}
+              <div className="grid grid-cols-3 gap-2 mb-3 text-xs">
                 {prop.price && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200/40 dark:border-slate-600/40">
-                    <span className="text-slate-600 dark:text-slate-300 block text-xs mb-0.5 font-medium">Price</span>
-                    <span className="font-bold text-blue-600 dark:text-blue-300">${prop.price}/night</span>
-                  </div>
-                )}
-                {prop.type && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200/40 dark:border-slate-600/40">
-                    <span className="text-slate-600 dark:text-slate-300 block text-xs mb-0.5 font-medium">Type</span>
-                    <span className="font-bold text-slate-900 dark:text-slate-100 capitalize">{prop.type}</span>
+                  <div className="bg-slate-50/80 dark:bg-slate-700/30 p-2 rounded border border-slate-200/40 dark:border-slate-600/30">
+                    <span className="text-slate-600 dark:text-slate-400 text-xs block mb-0.5">Price</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-300">${prop.price}/n</span>
                   </div>
                 )}
                 {prop.maxGuests && (
-                  <div className="bg-slate-50/80 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200/40 dark:border-slate-600/40">
-                    <span className="text-slate-600 dark:text-slate-300 block text-xs mb-0.5 font-medium">Guests</span>
+                  <div className="bg-slate-50/80 dark:bg-slate-700/30 p-2 rounded border border-slate-200/40 dark:border-slate-600/30">
+                    <span className="text-slate-600 dark:text-slate-400 text-xs block mb-0.5">Guests</span>
                     <span className="font-bold text-slate-900 dark:text-slate-100">Max {prop.maxGuests}</span>
+                  </div>
+                )}
+                {(prop.area || area) && (
+                  <div className="bg-slate-50/80 dark:bg-slate-700/30 p-2 rounded border border-slate-200/40 dark:border-slate-600/30">
+                    <span className="text-slate-600 dark:text-slate-400 text-xs block mb-0.5">Area</span>
+                    <span className="font-bold text-slate-900 dark:text-slate-100 truncate text-xs">
+                      {prop.area || area}
+                    </span>
                   </div>
                 )}
               </div>
@@ -158,48 +178,41 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
               {(prop.hasPool || prop.hasCamera || prop.hasWifi) && (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {prop.hasPool && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100/70 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100/70 dark:bg-blue-900/35 text-blue-700 dark:text-blue-300 rounded text-xs font-medium">
                       🏊 Pool
                     </span>
                   )}
                   {prop.hasCamera && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100/70 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-100/70 dark:bg-purple-900/35 text-purple-700 dark:text-purple-300 rounded text-xs font-medium">
                       📹 Security
                     </span>
                   )}
                   {prop.hasWifi && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100/70 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100/70 dark:bg-green-900/35 text-green-700 dark:text-green-300 rounded text-xs font-medium">
                       📶 WiFi
                     </span>
                   )}
                 </div>
               )}
 
-              {/* Area Badge */}
-              {(prop.area || area) && (
-                <div className="mb-3 text-xs text-slate-600 dark:text-slate-300 py-1 px-2 rounded-lg bg-slate-50/50 dark:bg-slate-700/30 border border-slate-200/40 dark:border-slate-600/40">
-                  📍 <span className="font-semibold text-slate-900 dark:text-slate-100">{prop.area || area}</span>
-                </div>
-              )}
-
               {/* Quick Actions */}
               {onQuickAction && (
-                <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200/50 dark:border-slate-700/50">
+                <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200/30 dark:border-slate-700/30">
                   <button
-                    onClick={() => onQuickAction(`WiFi password for unit ${prop.unit}`)}
-                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-blue-50/80 dark:bg-blue-900/40 hover:bg-blue-100/80 dark:hover:bg-blue-800/50 text-blue-700 dark:text-blue-200 rounded-lg transition-all duration-200 active:scale-95 border border-blue-200/60 dark:border-blue-700/40"
+                    onClick={() => onQuickAction(`What's the WiFi password at Unit ${prop.unit}?`)}
+                    className="flex-1 min-w-[90px] px-3 py-2 text-xs font-semibold bg-blue-100/80 dark:bg-blue-900/40 hover:bg-blue-200/80 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-200 rounded transition-all duration-150 active:scale-95"
                   >
                     📶 WiFi
                   </button>
                   <button
                     onClick={() => onQuickAction(`Does unit ${prop.unit} have parking?`)}
-                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-slate-100/80 dark:bg-slate-700/50 hover:bg-slate-200/80 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/60 dark:border-slate-600/40"
+                    className="flex-1 min-w-[90px] px-3 py-2 text-xs font-semibold bg-slate-100/80 dark:bg-slate-700/40 hover:bg-slate-200/80 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 rounded transition-all duration-150 active:scale-95"
                   >
                     🚗 Parking
                   </button>
                   <button
                     onClick={() => onQuickAction(`Tell me more about unit ${prop.unit}`)}
-                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-indigo-50/80 dark:bg-indigo-900/40 hover:bg-indigo-100/80 dark:hover:bg-indigo-800/50 text-indigo-700 dark:text-indigo-200 rounded-lg transition-all duration-200 active:scale-95 border border-indigo-200/60 dark:border-indigo-700/40"
+                    className="flex-1 min-w-[90px] px-3 py-2 text-xs font-semibold bg-indigo-100/80 dark:bg-indigo-900/40 hover:bg-indigo-200/80 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-200 rounded transition-all duration-150 active:scale-95"
                   >
                     ℹ️ Details
                   </button>

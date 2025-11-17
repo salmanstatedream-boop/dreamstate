@@ -252,6 +252,7 @@ function makeRecords(rows, headers) {
 
 function extractPropertyDetails(record, headers) {
   const unit = record["Unit #"] || "";
+  const address = record["Address"] || "";
   const title = record["Title on Listing's Site"] || "";
   const priceCol = findColumnIndex(headers, "Price");
   const price = priceCol !== -1 ? record[headers[priceCol]] : "";
@@ -263,6 +264,8 @@ function extractPropertyDetails(record, headers) {
   const maxGuests = maxGuestsCol !== -1 ? record[headers[maxGuestsCol]] : "";
   const ratingCol = findColumnIndex(headers, "Airbnb Rating");
   const rating = ratingCol !== -1 ? record[headers[ratingCol]] : "";
+  const areaCol = findColumnIndex(headers, "Property By Area");
+  const area = areaCol !== -1 ? record[headers[areaCol]] : "";
   
   const poolCol = findColumnIndex(headers, "Pool and Hot tube");
   const cameraCol = findColumnIndex(headers, "Camera Location");
@@ -274,12 +277,14 @@ function extractPropertyDetails(record, headers) {
 
   return {
     unit: String(unit).trim(),
+    address: String(address).trim(),
     title: String(title).trim(),
     price: String(price).replace(/[^\d.]/g, "").trim() || "0",
     type: String(type).toLowerCase().trim(),
     bedBath: String(bedBath).trim(),
     maxGuests: String(maxGuests).trim(),
     rating: String(rating).trim(),
+    area: String(area).trim(),
     hasPool: !!hasPool,
     hasCamera: !!hasCamera,
     hasWifi: !!hasWifi,
