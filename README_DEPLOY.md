@@ -85,7 +85,19 @@ See `ENV_SETUP.md` for detailed setup instructions.
 
 ## 🧪 Testing
 
-After deployment, test these queries:
+### Quick Test (5 minutes)
+See `QUICK_TEST_GUIDE.md` for a fast feature verification checklist.
+
+### Comprehensive Testing
+See `TEST_SUITE.md` for an extensive list of test questions covering:
+- Property-specific queries
+- Dataset queries
+- Edge cases
+- New features (Quick Actions, Property Cards, Dark Mode, Smart Suggestions, Streaming)
+- Error handling
+- Performance
+
+### Basic Test Queries
 
 **Property Queries:**
 - "What's the WiFi password at Unit 5?"
@@ -96,12 +108,17 @@ After deployment, test these queries:
 - "Which properties have pools?"
 - "Who owns the most properties?"
 - "Show properties above $200 per night"
+- "Which property is a mansion?"
+- "Which properties are villas?"
 
 ## 📚 Documentation
 
 - `README.md` - Full project documentation
 - `DEPLOYMENT.md` - Step-by-step deployment guide
 - `ENV_SETUP.md` - Environment variables setup
+- `QUICK_TEST_GUIDE.md` - 5-minute feature test guide
+- `TEST_SUITE.md` - Comprehensive test questions and scenarios
+- `NEW_FEATURES.md` - Details about the 5 priority features added
 
 ## ⚠️ Important Notes
 
