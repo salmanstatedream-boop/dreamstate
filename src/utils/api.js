@@ -20,10 +20,11 @@ export async function sendToWebhook(message) {
 		throw new Error(`Webhook error ${res.status}: ${text || res.statusText}`)
 	}
 
-	// Expected JSON: { reply: "..." }
+	// Expected JSON: { reply: "...", extracted: {...} }
 	const data = await res.json()
 	if (!data || typeof data.reply !== 'string') {
 		throw new Error('Invalid response from webhook. Expected { reply: string }')
 	}
-	return data.reply
+	// Return both reply and extracted data for context
+	return { reply: data.reply, extracted: data.extracted || null }
 }

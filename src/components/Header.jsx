@@ -1,6 +1,8 @@
-export default function Header() {
+import DarkModeToggle from './DarkModeToggle'
+
+export default function Header({ isDark, onToggleDark }) {
 return (
-<header className="sticky top-0 z-10 backdrop-blur-md bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 shadow-lg">
+<header className="sticky top-0 z-10 backdrop-blur-md bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-b border-slate-700/50 dark:border-slate-800/50 shadow-lg">
 <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
 <div className="flex items-center gap-3">
 <div className="p-2 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl">
@@ -10,10 +12,13 @@ return (
 </div>
 <div>
 <h1 className="text-white font-bold text-lg leading-tight">Property AI</h1>
-<p className="text-xs text-blue-200 font-medium">Smart Assistant</p>
+<p className="text-xs text-blue-200 dark:text-blue-300 font-medium">Smart Assistant</p>
 </div>
 </div>
+<div className="flex items-center gap-3">
+<DarkModeToggle isDark={isDark} onToggle={onToggleDark} />
 <div className="text-2xl">🏠</div>
+</div>
 </div>
 </header>
 )

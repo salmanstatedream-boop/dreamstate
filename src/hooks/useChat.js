@@ -38,8 +38,17 @@ export default function useChat() {
 
     setIsLoading(true)
     try {
-      const reply = await sendToWebhook(input)
-      const botMsg = { id: makeId(), role: 'bot', text: reply, timestamp: formatTime() }
+      const response = await sendToWebhook(input)
+      // Handle both string replies and object responses
+      const reply = typeof response === 'string' ? response : (response.reply || response)
+      const extracted = typeof response === 'object' ? (response.extracted || null) : null
+      const botMsg = { 
+        id: makeId(), 
+        role: 'bot', 
+        text: reply, 
+        timestamp: formatTime(),
+        extracted: extracted // Store extracted data for context
+      }
       setMessages(prev => [...prev, botMsg])
     } catch (err) {
       console.error(err)

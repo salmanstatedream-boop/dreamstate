@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 
-export default function ChatInput({ onSend }) {
+export default function ChatInput({ onSend, isDark = false }) {
 const [value, setValue] = useState('')
 const [sending, setSending] = useState(false)
 
@@ -29,16 +29,16 @@ handleSend()
 
 
 return (
-<div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white/95 to-transparent pt-3 pb-4 sm:pb-6 md:pb-8">
+<div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white dark:from-slate-900 via-white/95 dark:via-slate-900/95 to-transparent pt-3 pb-4 sm:pb-6 md:pb-8">
 <div className="mx-auto w-full max-w-3xl px-3 sm:px-6 lg:px-8">
 <motion.div
 initial={{ y: 30, opacity: 0 }}
 animate={{ y: 0, opacity: 1 }}
 transition={{ type: 'spring', stiffness: 200, damping: 24 }}
-className="flex items-end gap-2 bg-white rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-xl transition-shadow p-2 sm:p-3 border border-slate-200/80 backdrop-blur-sm"
+className="flex items-end gap-2 bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-xl transition-shadow p-2 sm:p-3 border border-slate-200/80 dark:border-slate-700/80 backdrop-blur-sm"
 >
 <textarea
-className="flex-1 resize-none outline-none p-3 sm:p-4 rounded-xl h-12 max-h-40 text-sm sm:text-base bg-slate-50 hover:bg-slate-100 transition-colors placeholder-slate-400"
+className="flex-1 resize-none outline-none p-3 sm:p-4 rounded-xl h-12 max-h-40 text-sm sm:text-base bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors placeholder-slate-400 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100"
 placeholder="Ask about properties, pricing, amenities..."
 value={value}
 onChange={(e) => setValue(e.target.value)}
