@@ -39,11 +39,12 @@ const isPropertyList = (text) => {
   if (!text) return false
   // Check for bullet points, unit numbers, or property list patterns
   const hasBullets = text.includes('•') || text.includes('-')
-  const hasUnits = /Unit\s+\d+/i.test(text)
-  const hasMultipleProperties = (text.match(/Unit\s+\d+/gi) || []).length > 1
-  const hasListPattern = /Here are|Here is|properties with|properties that/i.test(text)
+  const unitMatches = text.match(/Unit\s+\d+/gi) || []
+  const hasMultipleProperties = unitMatches.length > 1
+  const hasExplicitListPattern = /Here are the|Here are all|properties in|properties with|properties by/i.test(text)
   
-  return (hasBullets || hasUnits) && (hasMultipleProperties || hasListPattern)
+  // Only treat as property list if it has bullets OR (multiple units AND explicit list pattern)
+  return hasBullets || (hasMultipleProperties && hasExplicitListPattern)
 }
 
 return (
@@ -131,10 +132,10 @@ className="mt-1 bg-white/80 dark:bg-slate-900/75 backdrop-blur-2xl rounded-2xl s
     const lines = m.text.split(/\n/).filter(line => line.trim())
     const propertyItems = lines.filter(line => {
       const trimmed = line.trim()
+      // Only match bullet points or lines that start with "Unit" followed by number and bullet/dash
       return trimmed.startsWith('•') || 
              trimmed.startsWith('-') || 
-             /Unit\s+\d+/i.test(trimmed) ||
-             (trimmed.includes('–') && /Unit/i.test(trimmed))
+             /^Unit\s+\d+/.test(trimmed)
     })
     
     if (propertyItems.length > 0) {
