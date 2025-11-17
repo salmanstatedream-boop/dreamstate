@@ -4,44 +4,16 @@ import remarkGfm from 'remark-gfm'
 
 export default function StreamingMessage({ text, role = 'bot', timestamp, onComplete, isNewMessage = false }) {
   const [displayedText, setDisplayedText] = useState('')
-  const [isStreaming, setIsStreaming] = useState(true)
-  const hasStreamedRef = useRef(false)
+  const [isStreaming, setIsStreaming] = useState(false)
 
   useEffect(() => {
     if (!text) return
 
-    // If it's a user message, show immediately
-    if (role === 'user') {
-      setDisplayedText(text)
-      setIsStreaming(false)
-      return
-    }
-
-    // Only stream if this is a new message and hasn't been streamed yet
-    if (!isNewMessage || hasStreamedRef.current) {
-      setDisplayedText(text)
-      setIsStreaming(false)
-      return
-    }
-
-    // For bot messages, stream the text only once
-    setDisplayedText('')
-    setIsStreaming(true)
-    hasStreamedRef.current = true
-    let currentIndex = 0
-
-    const streamInterval = setInterval(() => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.slice(0, currentIndex + 1))
-        currentIndex++
-      } else {
-        clearInterval(streamInterval)
-        setIsStreaming(false)
-        if (onComplete) onComplete()
-      }
-    }, 15) // Adjust speed here (lower = faster)
-
-    return () => clearInterval(streamInterval)
+    // Show full text immediately for both user and bot messages.
+    // This removes the typing/streaming animation so replies appear instantly.
+    setDisplayedText(text)
+    setIsStreaming(false)
+    if (onComplete) onComplete()
   }, [text, role, onComplete, isNewMessage])
 
   const isUser = role === 'user'
