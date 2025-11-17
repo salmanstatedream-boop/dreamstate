@@ -47,9 +47,9 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
   const isUser = role === 'user'
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full mb-1`}>
       <div
-        className={`relative ${isUser ? 'user bg-gradient-to-br from-blue-500 to-blue-600 text-white' : 'bot bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-800 dark:text-slate-100'} rounded-2xl sm:rounded-3xl px-4 sm:px-5 py-3 sm:py-3.5 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] shadow-sm border ${isUser ? 'border-blue-600/20' : 'border-slate-200/50 dark:border-slate-700/50'} break-words`}
+        className={`relative ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bot bg-gradient-to-br from-white to-slate-50/80 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100 shadow-md shadow-slate-200/50 dark:shadow-black/20'} rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3.5 sm:py-4 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] border ${isUser ? 'border-blue-400/30 ring-1 ring-blue-300/20' : 'border-slate-200/60 dark:border-slate-700/40 ring-1 ring-slate-100/50 dark:ring-slate-800/50'} break-words backdrop-blur-sm transition-all duration-200 hover:shadow-lg`}
       >
         <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-strong:font-semibold prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl prose-pre:p-4 prose-pre:overflow-x-auto prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs prose-a:text-blue-500 prose-a:font-medium hover:prose-a:underline">
           <ReactMarkdown

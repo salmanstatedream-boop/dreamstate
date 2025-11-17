@@ -45,13 +45,20 @@ const isPropertyList = (text) => {
 }
 
 return (
-<div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors">
+<div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 via-indigo-50/20 to-purple-50/10 dark:from-slate-950 dark:via-slate-900 dark:via-slate-900 dark:to-slate-950 transition-colors relative overflow-hidden">
+  {/* Premium background pattern */}
+  <div className="fixed inset-0 opacity-30 dark:opacity-10 pointer-events-none">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.1),transparent_50%)]"></div>
+    <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+  </div>
+
 <Header isDark={isDark} onToggleDark={toggleDark} />
 
-<main className="flex-1 mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 pb-24 sm:pb-32 md:pb-36 pt-2 sm:pt-4">
+<main className="flex-1 mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 pb-24 sm:pb-32 md:pb-36 pt-2 sm:pt-4 relative z-10">
 <div
 ref={listRef}
-className="mt-2 sm:mt-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-14rem)] max-h-[calc(100vh-12rem)] sm:max-h-[calc(100vh-14rem)] overflow-y-auto border border-slate-200/60 dark:border-slate-700/60 scroll-smooth will-change-scroll"
+className="mt-2 sm:mt-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl rounded-3xl sm:rounded-[2rem] shadow-2xl shadow-blue-500/5 dark:shadow-black/20 p-5 sm:p-7 lg:p-9 min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-14rem)] max-h-[calc(100vh-12rem)] sm:max-h-[calc(100vh-14rem)] overflow-y-auto border border-white/20 dark:border-slate-700/50 scroll-smooth will-change-scroll ring-1 ring-black/5 dark:ring-white/5"
 >
 {messages.length === 0 && !isLoading && (
 <EmptyState onSelect={(question) => {
@@ -141,12 +148,12 @@ className="mt-2 sm:mt-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounde
 )}
 
 {error && (
-<div className="mt-4 text-sm text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/30 border border-red-200/60 dark:border-red-800/60 rounded-xl p-4 shadow-sm">
-<div className="flex items-start gap-2">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0 mt-0.5">
+<div className="mt-4 text-sm text-red-700 dark:text-red-300 bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/30 dark:to-rose-900/30 border border-red-200/60 dark:border-red-800/50 rounded-2xl p-4 sm:p-5 shadow-lg shadow-red-500/10 dark:shadow-red-900/20 ring-1 ring-red-200/50 dark:ring-red-800/30">
+<div className="flex items-start gap-3">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500 dark:text-red-400">
 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
 </svg>
-<span>{error}</span>
+<span className="font-medium">{error}</span>
 </div>
 </div>
 )}
