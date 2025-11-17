@@ -161,7 +161,7 @@ function matchProperty(propertyName, rows, headers) {
   if (!propertyName) return { match: null, suggestions: [] };
   const target = normalize(propertyName);
   const unitIndex = findColumnIndex(headers, "Unit #");
-  const titleIndex = findColumnIndex(headers, "Title on Listing's Site");
+  const titleIndex = findColumnIndex(headers, "Address");
   
   let bestMatch = null;
   let bestScore = 0;
@@ -253,7 +253,7 @@ function makeRecords(rows, headers) {
 function extractPropertyDetails(record, headers) {
   const unit = record["Unit #"] || "";
   const address = record["Address"] || "";
-  const title = record["Title on Listing's Site"] || "";
+  const title = record["Address"] || ""; // Use Address column instead of "Address"
   const priceCol = findColumnIndex(headers, "Price");
   const price = priceCol !== -1 ? record[headers[priceCol]] : "";
   const typeCol = findColumnIndex(headers, "Type");
@@ -407,7 +407,7 @@ function listPropertiesByOwner(records, ownerQuery) {
   if (filtered.length === 0) return null;
   const results = filtered.map((rec) => {
     const unit = rec["Unit #"] || "";
-    const title = rec["Title on Listing's Site"] || "";
+    const title = rec["Address"] || "";
     if (unit && title) return `Unit ${unit} – ${title}`;
     if (unit) return `Unit ${unit}`;
     if (title) return title;
@@ -483,7 +483,7 @@ async function handleDatasetQuery(extracted) {
         .filter((rec) => rec[headers[poolCol]] && String(rec[headers[poolCol]]).trim())
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           if (unit && title) return `Unit ${unit} – ${title}`;
           if (unit) return `Unit ${unit}`;
           if (title) return title;
@@ -505,7 +505,7 @@ async function handleDatasetQuery(extracted) {
         .filter((rec) => !rec[headers[cameraCol]] || !String(rec[headers[cameraCol]]).trim())
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           if (unit && title) return `Unit ${unit} – ${title}`;
           if (unit) return `Unit ${unit}`;
           if (title) return title;
@@ -536,7 +536,7 @@ async function handleDatasetQuery(extracted) {
         return "I couldn't find any ratings in my records.";
       }
       const unit = topProperty["Unit #"] || "";
-      const title = topProperty["Title on Listing's Site"] || "";
+      const title = topProperty["Address"] || "";
       const propertyName = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
       return `**${propertyName}** is the highest-rated property with a **${maxRating}** Airbnb rating.`;
     }
@@ -559,7 +559,7 @@ async function handleDatasetQuery(extracted) {
         return "I couldn't find any ratings in my records.";
       }
       const unit = bottomProperty["Unit #"] || "";
-      const title = bottomProperty["Title on Listing's Site"] || "";
+      const title = bottomProperty["Address"] || "";
       const propertyName = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
       return `**${propertyName}** is the lowest-rated property with a **${minRating}** Airbnb rating.`;
     }
@@ -583,7 +583,7 @@ async function handleDatasetQuery(extracted) {
         })
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           const price = rec[headers[priceCol]] || "";
           const display = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
           return `${display} – $${price}`;
@@ -608,7 +608,7 @@ async function handleDatasetQuery(extracted) {
         .filter((rec) => String(rec[headers[bedCol]] || "").toLowerCase().includes(searchBeds))
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           const beds = rec[headers[bedCol]] || "";
           const display = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
           return `${display} – ${beds}`;
@@ -639,7 +639,7 @@ async function handleDatasetQuery(extracted) {
         })
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           const guests = rec[headers[guestCol]] || "";
           const display = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
           return `${display} – sleeps **${guests}**`;
@@ -670,7 +670,7 @@ async function handleDatasetQuery(extracted) {
         })
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           const speed = rec[headers[wifiSpeedCol]] || "";
           const display = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
           return `${display} – **${speed} Mbps**`;
@@ -698,7 +698,7 @@ async function handleDatasetQuery(extracted) {
         })
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           const style = rec[headers[styleCol]] || "";
           if (unit && title) return `Unit ${unit} – ${title} (${style})`;
           if (unit) return `Unit ${unit} (${style})`;
@@ -728,7 +728,7 @@ async function handleDatasetQuery(extracted) {
         })
         .map((rec) => {
           const unit = rec["Unit #"] || "";
-          const title = rec["Title on Listing's Site"] || "";
+          const title = rec["Address"] || "";
           const type = rec[headers[typeCol]] || "";
           if (unit && title) return `Unit ${unit} – ${title} (${type})`;
           if (unit) return `Unit ${unit} (${type})`;
@@ -822,7 +822,7 @@ async function handleDatasetQuery(extracted) {
           propertiesByArea[areaKey] = [];
         }
         const unit = rec["Unit #"] || "";
-        const title = rec["Title on Listing's Site"] || "";
+        const title = rec["Address"] || "";
         const display = unit && title ? `Unit ${unit} – ${title}` : (unit || title || "(Unnamed)");
         propertiesByArea[areaKey].push(display);
       }
