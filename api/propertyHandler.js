@@ -119,21 +119,103 @@ function findColumnIndex(headers, desiredName) {
   return -1;
 }
 
+function fuzzyMatch(query, target) {
+  if (!query || !target) return 0;
+  const q = query.toLowerCase().trim();
+  const t = target.toLowerCase().trim();
+  if (q === t) return 1.0;
+  if (t.includes(q) || q.includes(t)) return 0.9;
+  
+  // Simple Levenshtein distance
+  const distance = levenshteinDistance(q, t);
+  const maxLen = Math.max(q.length, t.length);
+  return maxLen === 0 ? 0 : 1 - (distance / maxLen);
+}
+
+function levenshteinDistance(str1, str2) {
+  const matrix = [];
+  for (let i = 0; i <= str2.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= str1.length; j++) {
+    matrix[0][j] = j;
+  }
+  for (let i = 1; i <= str2.length; i++) {
+    for (let j = 1; j <= str1.length; j++) {
+      if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[str2.length][str1.length];
+}
+
 function matchProperty(propertyName, rows, headers) {
-  if (!propertyName) return null;
+  if (!propertyName) return { match: null, suggestions: [] };
   const target = normalize(propertyName);
   const unitIndex = findColumnIndex(headers, "Unit #");
   const titleIndex = findColumnIndex(headers, "Title on Listing's Site");
+  
   let bestMatch = null;
+  let bestScore = 0;
+  const suggestions = [];
+  
   for (const row of rows) {
     const unit = normalize(row[unitIndex] || "");
     const title = normalize(row[titleIndex] || "");
-    if (unit === target || title === target) return row;
-    if (unit.includes(target) || title.includes(target)) {
+    const unitRaw = row[unitIndex] || "";
+    const titleRaw = row[titleIndex] || "";
+    
+    // Exact match
+    if (unit === target || title === target) {
+      return { match: row, suggestions: [] };
+    }
+    
+    // Fuzzy matching
+    const unitScore = fuzzyMatch(target, unit);
+    const titleScore = fuzzyMatch(target, title);
+    const score = Math.max(unitScore, titleScore);
+    
+    if (score > bestScore) {
+      bestScore = score;
       bestMatch = row;
     }
+    
+    // Collect suggestions (similar matches)
+    if (score > 0.5 && score < 0.9) {
+      suggestions.push({
+        unit: unitRaw,
+        title: titleRaw,
+        score: score
+      });
+    }
   }
-  return bestMatch;
+  
+  // Return match if score is good enough (>= 0.6)
+  if (bestScore >= 0.6) {
+    return { 
+      match: bestMatch, 
+      suggestions: suggestions
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3)
+        .map(s => s.unit || s.title)
+    };
+  }
+  
+  // Return top suggestions if no good match
+  return { 
+    match: null, 
+    suggestions: suggestions
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map(s => s.unit || s.title)
+  };
 }
 
 function makeRecords(rows, headers) {
@@ -150,7 +232,7 @@ async function handlePropertyQuery(extracted) {
   const { propertyName, fieldType, informationToFind } = extracted;
 
   if (!propertyName) {
-    return "I couldn’t identify the property. Can you confirm the name or unit?";
+    return "I couldn't identify the property. Can you confirm the name or unit?";
   }
 
   if (!fieldType) {
@@ -158,10 +240,22 @@ async function handlePropertyQuery(extracted) {
   }
 
   const { rows, headers } = await loadSheet();
-  const matchedRow = matchProperty(propertyName, rows, headers);
+  
+  // Validate sheet structure
+  if (!rows || rows.length === 0) {
+    return "I'm sorry, but I couldn't access the property database. Please try again later.";
+  }
+  
+  const { match: matchedRow, suggestions } = matchProperty(propertyName, rows, headers);
 
   if (!matchedRow) {
-    return `I couldn't find any property matching "${propertyName}". Can you please double-check the property name or unit number?`;
+    let response = `I couldn't find any property matching "${propertyName}".`;
+    if (suggestions && suggestions.length > 0) {
+      response += `\n\nDid you mean one of these?\n${suggestions.map(s => `• ${s}`).join('\n')}`;
+    } else {
+      response += `\n\nCan you please double-check the property name or unit number?`;
+    }
+    return response;
   }
 
   const possibleColumns = FIELD_TO_COLUMNS[fieldType];

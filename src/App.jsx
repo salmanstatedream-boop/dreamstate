@@ -6,6 +6,7 @@ import ChatInput from './components/ChatInput'
 import TypingDots from './components/TypingDots'
 import QuickActions from './components/QuickActions'
 import PropertyCard from './components/PropertyCard'
+import EmptyState from './components/EmptyState'
 import useChat from './hooks/useChat'
 import useAutoScroll from './hooks/useAutoScroll'
 import useDarkMode from './hooks/useDarkMode'
@@ -34,7 +35,14 @@ systemGreet: true,
 
 // Check if message contains property list (for PropertyCard)
 const isPropertyList = (text) => {
-  return text.includes('•') || text.includes('Unit') || text.match(/Unit\s+\d+/i)
+  if (!text) return false
+  // Check for bullet points, unit numbers, or property list patterns
+  const hasBullets = text.includes('•') || text.includes('-')
+  const hasUnits = /Unit\s+\d+/i.test(text)
+  const hasMultipleProperties = (text.match(/Unit\s+\d+/gi) || []).length > 1
+  const hasListPattern = /Here are|Here is|properties with|properties that/i.test(text)
+  
+  return (hasBullets || hasUnits) && (hasMultipleProperties || hasListPattern)
 }
 
 return (
@@ -48,27 +56,36 @@ className="mt-4 sm:mt-8 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounde
 >
 <AnimatePresence initial={false}>
 {messages.length === 0 && !isLoading && (
-<motion.div
-initial={{ opacity: 0, y: 20 }}
-animate={{ opacity: 1, y: 0 }}
-className="text-center py-12"
->
-<div className="text-5xl mb-3">🏠</div>
-<h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">Welcome to Property AI</h2>
-<p className="text-slate-500 dark:text-slate-400">Ask me about properties, amenities, pricing, and more!</p>
-<QuickActions onSelect={(question) => {
+<EmptyState onSelect={(question) => {
   sendMessage(question)
-  setCurrentIntent('dataset_query')
-}} visible={messages.length === 0} />
-</motion.div>
+  if (question.toLowerCase().includes('unit')) {
+    setCurrentIntent('property_query')
+  } else {
+    setCurrentIntent('dataset_query')
+  }
+}} />
 )}
 {messages.map((m) => {
   // Check if this is a property list response
   if (m.role === 'bot' && isPropertyList(m.text)) {
-    // Split by bullet points or lines
-    const propertyItems = m.text.split(/\n/).filter(line => line.trim().startsWith('•') || line.match(/Unit\s+\d+/i))
+    // Split by bullet points or lines, handle both • and - bullets
+    const lines = m.text.split(/\n/).filter(line => line.trim())
+    const propertyItems = lines.filter(line => {
+      const trimmed = line.trim()
+      return trimmed.startsWith('•') || 
+             trimmed.startsWith('-') || 
+             /Unit\s+\d+/i.test(trimmed) ||
+             (trimmed.includes('–') && /Unit/i.test(trimmed))
+    })
     
     if (propertyItems.length > 0) {
+      // Also show the intro text if present
+      const introText = lines.find(line => 
+        !line.trim().startsWith('•') && 
+        !line.trim().startsWith('-') &&
+        /Here are|Here is|properties/i.test(line)
+      )
+      
       return (
         <motion.div
           key={m.id}
@@ -77,10 +94,15 @@ className="text-center py-12"
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2 }}
         >
+          {introText && (
+            <div className="mb-4 text-slate-700 dark:text-slate-300 font-medium">
+              {introText.trim()}
+            </div>
+          )}
           {propertyItems.map((item, idx) => (
             <PropertyCard
               key={idx}
-              property={item.replace(/^•\s*/, '')}
+              property={item.replace(/^[•\-]\s*/, '').trim()}
               onQuickAction={(action) => {
                 sendMessage(action)
                 setCurrentIntent('property_query')
