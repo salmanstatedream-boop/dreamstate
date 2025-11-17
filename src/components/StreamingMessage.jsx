@@ -36,10 +36,10 @@ export default function StreamingMessage({ text, role = 'bot', timestamp, onComp
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full mb-1`}>
       <div
-        className={`relative ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bot bg-gradient-to-br from-white to-slate-50/80 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100 shadow-md shadow-slate-200/50 dark:shadow-black/20'} rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3.5 sm:py-4 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] border ${isUser ? 'border-blue-400/30 ring-1 ring-blue-300/20' : 'border-slate-200/60 dark:border-slate-700/40 ring-1 ring-slate-100/50 dark:ring-slate-800/50'} break-words backdrop-blur-sm transition-all duration-200 hover:shadow-lg`}
+        className={`relative group ${isUser ? 'user bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20' : 'bot bg-gradient-to-br from-white to-slate-50/80 dark:from-slate-800/90 dark:to-slate-900/90 text-slate-800 dark:text-slate-100 shadow-md shadow-slate-200/50 dark:shadow-black/20'} rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3.5 sm:py-4 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] border ${isUser ? 'border-blue-400/30 ring-1 ring-blue-300/20' : 'border-slate-200/60 dark:border-slate-700/40 ring-1 ring-slate-100/50 dark:ring-slate-800/50'} break-words backdrop-blur-sm transition-all duration-200 hover:shadow-lg`}
       >
         {/* Action buttons: copy, retry */}
-        <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
+        <div className="absolute top-3 right-3 flex items-center gap-2 z-20 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-150">
           <div className="relative">
             <button onClick={handleCopy} title="Copy message" aria-label="Copy message" className="w-9 h-9 rounded-full flex items-center justify-center bg-white/90 dark:bg-slate-800/75 border border-white/60 dark:border-slate-700/40 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-slate-700 dark:text-slate-100">
