@@ -55,7 +55,10 @@ spin: 'spin 1s linear infinite',
 pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 fadeIn: 'fadeIn 0.3s ease-in',
 slideIn: 'slideIn 0.3s ease-out',
-slideUp: 'slideUp 0.3s ease-out'
+slideUp: 'slideUp 0.3s ease-out',
+'fade-in': 'fadeIn 0.2s ease-out',
+'slide-in-from-bottom-4': 'slideInFromBottom 0.3s ease-out',
+'slide-in-from-top-2': 'slideInFromTop 0.2s ease-out'
 },
 keyframes: {
 fadeIn: {
@@ -68,6 +71,14 @@ to: { opacity: '1', transform: 'translateX(0)' }
 },
 slideUp: {
 from: { opacity: '0', transform: 'translateY(10px)' },
+to: { opacity: '1', transform: 'translateY(0)' }
+},
+slideInFromBottom: {
+from: { opacity: '0', transform: 'translateY(16px)' },
+to: { opacity: '1', transform: 'translateY(0)' }
+},
+slideInFromTop: {
+from: { opacity: '0', transform: 'translateY(-8px)' },
 to: { opacity: '1', transform: 'translateY(0)' }
 }
 }

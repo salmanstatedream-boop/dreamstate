@@ -1,45 +1,21 @@
-import { motion } from 'framer-motion'
 import QuickActions from './QuickActions'
 
 export default function EmptyState({ onSelect }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center py-12"
-    >
-      <motion.div
-        initial={{ scale: 0.8 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.2, type: 'spring' }}
-        className="text-6xl mb-4"
-      >
+    <div className="text-center py-8 sm:py-12 px-2">
+      <div className="text-5xl sm:text-6xl mb-4">
         🏠
-      </motion.div>
-      <motion.h2
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3"
-      >
+      </div>
+      <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 px-4">
         Welcome to Property AI
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="text-slate-500 dark:text-slate-400 mb-6 text-lg"
-      >
+      </h2>
+      <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-8 px-4 max-w-2xl mx-auto leading-relaxed">
         Your smart assistant for property information, amenities, pricing, and more!
-      </motion.p>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <QuickActions onSelect={onSelect} visible={true} />
-      </motion.div>
-    </motion.div>
+      </p>
+      <div className="px-2">
+        <QuickActions onSelect={onSelect} visible={true} suggestions={null} />
+      </div>
+    </div>
   )
 }
 

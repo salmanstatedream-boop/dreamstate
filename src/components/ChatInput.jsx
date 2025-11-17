@@ -1,11 +1,8 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-
 
 export default function ChatInput({ onSend, isDark = false }) {
 const [value, setValue] = useState('')
 const [sending, setSending] = useState(false)
-
 
 const handleSend = async () => {
 const message = value.trim()
@@ -19,7 +16,6 @@ setSending(false)
 }
 }
 
-
 const handleKeyDown = (e) => {
 if (e.key === 'Enter' && !e.shiftKey) {
 e.preventDefault()
@@ -27,27 +23,23 @@ handleSend()
 }
 }
 
-
 return (
-<div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white dark:from-slate-900 via-white/95 dark:via-slate-900/95 to-transparent pt-3 pb-4 sm:pb-6 md:pb-8">
-<div className="mx-auto w-full max-w-3xl px-3 sm:px-6 lg:px-8">
-<motion.div
-initial={{ y: 30, opacity: 0 }}
-animate={{ y: 0, opacity: 1 }}
-transition={{ type: 'spring', stiffness: 200, damping: 24 }}
-className="flex items-end gap-2 bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-xl transition-shadow p-2 sm:p-3 border border-slate-200/80 dark:border-slate-700/80 backdrop-blur-sm"
+<div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white dark:from-slate-900 via-white/98 dark:via-slate-900/98 to-transparent pt-4 pb-3 sm:pb-4 md:pb-6 border-t border-slate-200/50 dark:border-slate-700/50">
+<div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6">
+<div className="flex items-end gap-2 bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-200 p-2 sm:p-3 border border-slate-200/80 dark:border-slate-700/80 backdrop-blur-sm"
 >
 <textarea
-className="flex-1 resize-none outline-none p-3 sm:p-4 rounded-xl h-12 max-h-40 text-sm sm:text-base bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors placeholder-slate-400 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100"
+className="flex-1 resize-none outline-none p-2.5 sm:p-3 rounded-lg h-11 sm:h-12 max-h-32 sm:max-h-40 text-sm sm:text-base bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600/50 focus:bg-white dark:focus:bg-slate-700 transition-colors placeholder-slate-400 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100"
 placeholder="Ask about properties, pricing, amenities..."
 value={value}
 onChange={(e) => setValue(e.target.value)}
 onKeyDown={handleKeyDown}
+rows={1}
 />
 <button
 onClick={handleSend}
 disabled={sending || !value.trim()}
-className="shrink-0 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 sm:px-4 py-3 text-sm font-semibold hover:from-blue-600 hover:to-blue-700 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed transition-all active:scale-95"
+className="shrink-0 inline-flex items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 sm:px-4 h-11 sm:h-12 text-sm font-semibold hover:from-blue-600 hover:to-blue-700 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed transition-all active:scale-95 shadow-sm hover:shadow-md"
 aria-label="Send message"
 >
 {sending ? (
@@ -60,7 +52,7 @@ aria-label="Send message"
 </svg>
 )}
 </button>
-</motion.div>
+</div>
 </div>
 </div>
 )
