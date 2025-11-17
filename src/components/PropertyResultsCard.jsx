@@ -1,57 +1,63 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 
-export default function PropertyResultsCard({ properties, area, onQuickAction }) {
+export default function PropertyResultsCard({ properties = [], area, onQuickAction }) {
   const [activeFilter, setActiveFilter] = useState('all')
+
+  // Validate properties array
+  const validProperties = useMemo(() => {
+    if (!Array.isArray(properties)) return []
+    return properties.filter(p => p && typeof p === 'object')
+  }, [properties])
 
   // Extract unique filters from properties
   const filters = useMemo(() => {
-    const hasPool = properties.some(p => p.hasPool)
-    const hasCamera = properties.some(p => p.hasCamera)
-    const types = new Set(properties.map(p => p.type).filter(Boolean))
+    const hasPool = validProperties.some(p => p.hasPool === true)
+    const hasCamera = validProperties.some(p => p.hasCamera === true)
+    const types = new Set(validProperties.map(p => p.type).filter(Boolean))
 
     return {
       hasPool,
       hasCamera,
       types: Array.from(types).sort(),
     }
-  }, [properties])
+  }, [validProperties])
 
   // Filter properties based on active filter
   const filteredProperties = useMemo(() => {
-    if (activeFilter === 'all') return properties
-    if (activeFilter === 'pool') return properties.filter(p => p.hasPool)
-    if (activeFilter === 'camera') return properties.filter(p => p.hasCamera)
-    return properties.filter(p => p.type === activeFilter)
-  }, [properties, activeFilter])
+    if (activeFilter === 'all') return validProperties
+    if (activeFilter === 'pool') return validProperties.filter(p => p.hasPool === true)
+    if (activeFilter === 'camera') return validProperties.filter(p => p.hasCamera === true)
+    return validProperties.filter(p => p.type === activeFilter)
+  }, [validProperties, activeFilter])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {/* Filter Row */}
       <div className="flex flex-wrap gap-2 pb-4 border-b border-slate-200/60 dark:border-slate-700/60">
         {/* All Properties Button */}
         <button
           onClick={() => setActiveFilter('all')}
-          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 whitespace-nowrap ${
+          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
             activeFilter === 'all'
               ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
               : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
           }`}
         >
-          All Properties ({properties.length})
+          All ({validProperties.length})
         </button>
 
         {/* Pool/Hot Tub Filter */}
         {filters.hasPool && (
           <button
             onClick={() => setActiveFilter('pool')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap ${
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeFilter === 'pool'
                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
                 : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
             }`}
           >
             <span>🏊</span>
-            <span>Pool/Hot Tub ({properties.filter(p => p.hasPool).length})</span>
+            <span>Pool ({validProperties.filter(p => p.hasPool).length})</span>
           </button>
         )}
 
@@ -59,14 +65,14 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
         {filters.hasCamera && (
           <button
             onClick={() => setActiveFilter('camera')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap ${
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeFilter === 'camera'
                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
                 : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
             }`}
           >
             <span>📹</span>
-            <span>Cameras ({properties.filter(p => p.hasCamera).length})</span>
+            <span>Security ({validProperties.filter(p => p.hasCamera).length})</span>
           </button>
         )}
 
@@ -75,13 +81,13 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
           <button
             key={type}
             onClick={() => setActiveFilter(type)}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 whitespace-nowrap ${
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 whitespace-nowrap flex-shrink-0 capitalize ${
               activeFilter === type
                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20'
                 : 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-600/50'
             }`}
           >
-            {type} ({properties.filter(p => p.type === type).length})
+            {type} ({validProperties.filter(p => p.type === type).length})
           </button>
         ))}
       </div>
@@ -95,7 +101,7 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
         ) : (
           filteredProperties.map((prop, idx) => (
             <div
-              key={idx}
+              key={`${prop.unit}-${idx}`}
               className="group p-4 sm:p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all duration-200 hover:border-blue-300/50 dark:hover:border-blue-600/30"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
@@ -150,23 +156,25 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
               </div>
 
               {/* Amenities */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                {prop.hasPool && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100/70 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold">
-                    🏊 Pool/Hot Tub
-                  </span>
-                )}
-                {prop.hasCamera && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100/70 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">
-                    📹 Security
-                  </span>
-                )}
-                {prop.hasWifi && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100/70 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-xs font-semibold">
-                    📶 WiFi
-                  </span>
-                )}
-              </div>
+              {(prop.hasPool || prop.hasCamera || prop.hasWifi) && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {prop.hasPool && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100/70 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold">
+                      🏊 Pool
+                    </span>
+                  )}
+                  {prop.hasCamera && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100/70 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">
+                      📹 Security
+                    </span>
+                  )}
+                  {prop.hasWifi && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100/70 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-xs font-semibold">
+                      📶 WiFi
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Area Badge */}
               {(prop.area || area) && (
@@ -180,19 +188,19 @@ export default function PropertyResultsCard({ properties, area, onQuickAction })
                 <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200/50 dark:border-slate-700/50">
                   <button
                     onClick={() => onQuickAction(`What's the WiFi password at Unit ${prop.unit || prop.title}?`)}
-                    className="flex-1 min-w-max px-3 py-2 text-xs font-semibold bg-slate-100/70 dark:bg-slate-700/50 hover:bg-slate-200/70 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
+                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-slate-100/70 dark:bg-slate-700/50 hover:bg-slate-200/70 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
                   >
                     📶 WiFi
                   </button>
                   <button
                     onClick={() => onQuickAction(`Does Unit ${prop.unit || prop.title} have parking?`)}
-                    className="flex-1 min-w-max px-3 py-2 text-xs font-semibold bg-slate-100/70 dark:bg-slate-700/50 hover:bg-slate-200/70 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
+                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-slate-100/70 dark:bg-slate-700/50 hover:bg-slate-200/70 dark:hover:bg-slate-600/60 text-slate-700 dark:text-slate-200 rounded-lg transition-all duration-200 active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
                   >
                     🚗 Parking
                   </button>
                   <button
                     onClick={() => onQuickAction(`Tell me more about Unit ${prop.unit || prop.title}`)}
-                    className="flex-1 min-w-max px-3 py-2 text-xs font-semibold bg-blue-100/70 dark:bg-blue-900/30 hover:bg-blue-200/70 dark:hover:bg-blue-800/40 text-blue-700 dark:text-blue-300 rounded-lg transition-all duration-200 active:scale-95 border border-blue-200/50 dark:border-blue-700/50"
+                    className="flex-1 min-w-[100px] px-3 py-2 text-xs font-semibold bg-blue-100/70 dark:bg-blue-900/30 hover:bg-blue-200/70 dark:hover:bg-blue-800/40 text-blue-700 dark:text-blue-300 rounded-lg transition-all duration-200 active:scale-95 border border-blue-200/50 dark:border-blue-700/50"
                   >
                     ℹ️ Details
                   </button>
