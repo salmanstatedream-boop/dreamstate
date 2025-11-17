@@ -116,7 +116,8 @@ const toggleListening = () => {
 }
 
 return (
-<div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white/95 dark:from-slate-900/95 via-white/90 dark:via-slate-900/90 to-transparent pt-5 pb-4 sm:pb-5 md:pb-6 border-t border-slate-200/60 dark:border-slate-700/40 backdrop-blur-xl">
+	<>
+		<div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white/95 dark:from-slate-900/95 via-white/90 dark:via-slate-900/90 to-transparent pt-5 pb-4 sm:pb-5 md:pb-6 border-t border-slate-200/60 dark:border-slate-700/40 backdrop-blur-xl">
 <div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6">
 <div className="flex items-end gap-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/5 dark:shadow-black/20 hover:shadow-2xl hover:shadow-black/10 dark:hover:shadow-black/30 transition-all duration-300 p-3 sm:p-4 border border-slate-200/60 dark:border-slate-700/50 backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/5"
 >
@@ -164,13 +165,14 @@ aria-label="Send message"
 </svg>
 )}
 </button>
-</div>
-</div>
-</div>
-{!supportsSpeech && (
-	<div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 mt-1">
-		<div className="text-xs text-slate-500 dark:text-slate-400">Voice input not supported in this browser. Try Chrome or Edge for best results.</div>
-	</div>
-)}
+		</div>
+		</div>
+		</div>
+		{!supportsSpeech && (
+			<div className="mx-auto w-full max-w-4xl px-3 sm:px-4 lg:px-6 mt-1">
+				<div className="text-xs text-slate-500 dark:text-slate-400">Voice input not supported in this browser. Try Chrome or Edge for best results.</div>
+			</div>
+		)}
+	</>
 )
 }
