@@ -3,13 +3,25 @@ import ReactMarkdown from 'react-markdown'
 export default function PropertyCard({ property, onQuickAction }) {
   // Extract property details from markdown or structured data
   const extractPropertyInfo = (text) => {
-    const unitMatch = text.match(/Unit\s+(\d+)/i)
+    // Extract full unit (e.g., "1679 Tempa Road")
+    const fullUnitMatch = text.match(/Unit\s+([^\n–]+?)(?:\s*–|$)/i)
+    const fullUnit = fullUnitMatch?.[1]?.trim() || ''
+    
+    // Extract just unit number
+    const unitNumberMatch = fullUnit.match(/^(\d+)/i)
+    const unitNumber = unitNumberMatch?.[1] || ''
+    
+    // Extract unit description
+    const unitDescription = fullUnit.replace(/^\d+\s*/, '').trim() || ''
+    
     const titleMatch = text.match(/–\s*(.+?)(?:\s*\(|$)/)
     const priceMatch = text.match(/\$(\d+)/)
     const ratingMatch = text.match(/(\d+\.?\d*)\s*(?:star|rating)/i)
     
     return {
-      unit: unitMatch?.[1] || '',
+      unit: fullUnit,
+      unitNumber: unitNumber,
+      unitDescription: unitDescription,
       title: titleMatch?.[1]?.trim() || '',
       price: priceMatch?.[1] || '',
       rating: ratingMatch?.[1] || '',
@@ -21,12 +33,21 @@ export default function PropertyCard({ property, onQuickAction }) {
   return (
     <div className="group p-5 sm:p-6 bg-gradient-to-br from-white via-white to-blue-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-md hover:shadow-xl shadow-slate-200/50 dark:shadow-black/30 transition-all duration-300 hover:scale-[1.02] hover:border-blue-300/50 dark:hover:border-blue-600/30 ring-1 ring-slate-100/50 dark:ring-slate-800/50 backdrop-blur-sm"
     >
-      <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+      <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2 flex-wrap">
         <div className="flex-1 min-w-0">
-          {info.unit && (
-            <span className="inline-block px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl mb-3 shadow-md shadow-blue-500/20 ring-1 ring-blue-400/30">
-              Unit {info.unit}
-            </span>
+          {info.unitNumber && (
+            <div className="flex flex-col gap-1 mb-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-block px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl shadow-md shadow-blue-500/20 ring-1 ring-blue-400/30">
+                  Unit {info.unitNumber}
+                </span>
+                {info.unitDescription && (
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {info.unitDescription}
+                  </span>
+                )}
+              </div>
+            </div>
           )}
           {info.title && (
             <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 mb-2 sm:mb-3 break-words leading-tight tracking-tight">
@@ -60,21 +81,21 @@ export default function PropertyCard({ property, onQuickAction }) {
       {onQuickAction && (
         <div className="flex flex-col sm:flex-row gap-2.5 mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-700/60">
           <button
-            onClick={() => onQuickAction(`What's the WiFi password of ${info.title || (info.unit || '')}?`)}
+            onClick={() => onQuickAction(`What's the WiFi password of ${info.unit || info.title || ''}?`)}
             className="flex-1 px-4 py-2.5 text-xs font-semibold bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-700/50 dark:to-slate-800/50 hover:from-slate-100 hover:to-slate-200 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
             title="📶 WiFi Info"
           >
             📶 WiFi Info
           </button>
           <button
-            onClick={() => onQuickAction(`Does ${info.unit ? `Unit ${info.unit}` : info.title} have parking?`)}
+            onClick={() => onQuickAction(`Does unit ${info.unitNumber} have parking?`)}
             className="flex-1 px-4 py-2.5 text-xs font-semibold bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-700/50 dark:to-slate-800/50 hover:from-slate-100 hover:to-slate-200 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 border border-slate-200/50 dark:border-slate-600/50"
             title="🚗 Parking"
           >
             🚗 Parking
           </button>
           <button
-            onClick={() => onQuickAction(`Tell me more about ${info.unit ? `Unit ${info.unit}` : info.title}`)}
+            onClick={() => onQuickAction(`Tell me more about unit ${info.unitNumber}`)}
             className="flex-1 px-4 py-2.5 text-xs font-semibold bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 text-blue-700 dark:text-blue-300 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 border border-blue-200/50 dark:border-blue-700/50"
             title="ℹ️ More Details"
           >

@@ -3,17 +3,27 @@ import { useState, useMemo, useCallback } from 'react'
 export default function PropertyResultsCard({ properties = [], area, onQuickAction }) {
   const [activeFilter, setActiveFilter] = useState('all')
 
-  // Validate properties array and ensure unit is clean number
+  // Validate properties array - keep full unit value from sheet
   const validProperties = useMemo(() => {
     if (!Array.isArray(properties)) return []
-    return properties.filter(p => p && typeof p === 'object' && p.unit).map(p => ({
-      ...p,
-      // Ensure unit is just the number part
-      unit: String(p.unit).split(/[^\d]/)[0] || p.unit,
-      // Use address if available, otherwise fall back to title
-      // Prefer the exact address from the sheet; do not show index/title by default
-      displayAddress: (p.address || '').trim()
-    }))
+    return properties.filter(p => p && typeof p === 'object' && p.unit).map(p => {
+      const fullUnit = String(p.unit).trim()
+      // Extract just the number for key purposes
+      const unitNumber = fullUnit.match(/^\d+/)?.[0] || fullUnit
+      // Extract the descriptive part (e.g., "Tempa Road" from "1679 Tempa Road")
+      const unitDescription = fullUnit.replace(/^\d+\s*/, '').trim() || ''
+      
+      return {
+        ...p,
+        unit: fullUnit, // Keep complete unit value
+        unitNumber: unitNumber, // Just the number
+        unitDescription: unitDescription, // The descriptive part
+        // Title on Listing's Site (marketing title)
+        displayTitle: (p.title || p['Title on Listing\'s Site'] || '').trim(),
+        // Exact address from sheet
+        displayAddress: (p.address || '').trim()
+      }
+    })
   }, [properties])
 
   // Extract unique filters from properties
@@ -111,12 +121,21 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
               key={`${prop.unit}-${idx}`}
               className="group p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              {/* Header: Unit Badge + Rating */}
-              <div className="flex items-center justify-between gap-3 mb-3">
+              {/* Header: Unit Info + Rating */}
+              <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
                 {prop.unit && (
-                  <span className="inline-block px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow-sm whitespace-nowrap">
-                    Unit {prop.unit}
-                  </span>
+                  <div className="flex flex-col gap-1 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="inline-block px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow-sm whitespace-nowrap">
+                        Unit {prop.unitNumber}
+                      </span>
+                      {prop.unitDescription && (
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                          {prop.unitDescription}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 )}
                 {prop.rating && (
                   <div className="flex items-center gap-1 px-2 py-1 bg-yellow-100/70 dark:bg-yellow-900/40 rounded-md flex-shrink-0 whitespace-nowrap">
@@ -128,11 +147,18 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
                 )}
               </div>
 
-              {/* Address/Title */}
-              {prop.displayAddress && (
-                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-200 mb-2 leading-snug">
-                  {prop.displayAddress}
+              {/* Marketing Title (Title on Listing's Site) */}
+              {prop.displayTitle && (
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1 leading-snug">
+                  {prop.displayTitle}
                 </h4>
+              )}
+
+              {/* Exact Address from Sheet */}
+              {prop.displayAddress && (
+                <p className="text-xs text-slate-600 dark:text-slate-400 mb-2 italic">
+                  {prop.displayAddress}
+                </p>
               )}
 
               {/* Type + Bed x Bath */}
@@ -200,19 +226,19 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
               {onQuickAction && (
                 <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200/30 dark:border-slate-700/30">
                   <button
-                    onClick={() => onQuickAction(`What's the WiFi password of ${prop.displayAddress || prop.title || (prop.unit || '')}?`) }
+                    onClick={() => onQuickAction(`What's the WiFi password of ${prop.displayAddress || prop.unit || ''}?`)}
                     className="flex-1 min-w-[90px] px-3 py-2 text-xs font-semibold bg-blue-100/80 dark:bg-blue-900/40 hover:bg-blue-200/80 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-200 rounded transition-all duration-150 active:scale-95"
                   >
                     📶 WiFi
                   </button>
                   <button
-                    onClick={() => onQuickAction(`Does unit ${prop.unit} have parking?`)}
+                    onClick={() => onQuickAction(`Does unit ${prop.unitNumber} have parking?`)}
                     className="flex-1 min-w-[90px] px-3 py-2 text-xs font-semibold bg-slate-100/80 dark:bg-slate-700/40 hover:bg-slate-200/80 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 rounded transition-all duration-150 active:scale-95"
                   >
                     🚗 Parking
                   </button>
                   <button
-                    onClick={() => onQuickAction(`Tell me more about unit ${prop.unit}`)}
+                    onClick={() => onQuickAction(`Tell me more about unit ${prop.unitNumber}`)}
                     className="flex-1 min-w-[90px] px-3 py-2 text-xs font-semibold bg-indigo-100/80 dark:bg-indigo-900/40 hover:bg-indigo-200/80 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-200 rounded transition-all duration-150 active:scale-95"
                   >
                     ℹ️ Details
