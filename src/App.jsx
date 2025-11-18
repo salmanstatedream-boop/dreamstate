@@ -8,13 +8,16 @@ import QuickActions from './components/QuickActions'
 import PropertyCard from './components/PropertyCard'
 import PropertyResultsCard from './components/PropertyResultsCard'
 import EmptyState from './components/EmptyState'
+import AuthPage from './pages/AuthPage'
 import useChat from './hooks/useChat'
 import useAutoScroll from './hooks/useAutoScroll'
 import useDarkMode from './hooks/useDarkMode'
 import useSmartSuggestions from './hooks/useSmartSuggestions'
+import { useAuth } from './context/AuthContext'
 
 
 export default function App() {
+const { user, loading: authLoading } = useAuth()
 const { messages, sendMessage, isLoading, error } = useChat()
 const listRef = useRef(null)
 useAutoScroll(listRef, [messages, isLoading], isLoading || messages.length > 0)
@@ -25,13 +28,30 @@ const smartSuggestions = useSmartSuggestions(messages, currentIntent)
 
 useEffect(() => {
 // On first load, greet the user if there are no messages
-if (!messages.length) {
+if (!messages.length && user) {
 sendMessage('', {
 systemGreet: true,
 })
 }
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [])
+
+// Show loading state while auth is initializing
+if (authLoading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/10 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-blue-500 animate-spin"></div>
+        <p className="text-slate-600 dark:text-slate-400 font-medium">Loading…</p>
+      </div>
+    </div>
+  )
+}
+
+// Show auth page if not logged in
+if (!user) {
+  return <AuthPage />
+}
 
 
 // Check if message contains property list (for PropertyCard)
@@ -57,7 +77,7 @@ return (
     <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
   </div>
 
-<Header isDark={isDark} onToggleDark={toggleDark} />
+<Header isDark={isDark} onToggleDark={toggleDark} user={user} />
 
 <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28 pt-1 relative z-10">
 <div

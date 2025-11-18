@@ -119,7 +119,7 @@ return (
 	<>
 	<div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white/95 dark:from-slate-900/95 via-white/90 dark:via-slate-900/90 to-transparent pt-3 pb-3 sm:pb-4 border-t border-slate-200/50 dark:border-slate-700/40 backdrop-blur-xl">
 <div className="mx-auto w-full max-w-5xl px-3 sm:px-4 lg:px-6">
-			<div className="flex items-end gap-2 bg-white/80 dark:bg-slate-800/80 rounded-xl shadow-lg shadow-black/5 dark:shadow-black/20 hover:shadow-lg hover:shadow-black/8 dark:hover:shadow-black/25 transition-all duration-200 p-2 sm:p-3 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/5">
+<div className="flex items-end gap-2 bg-white/80 dark:bg-slate-800/80 rounded-xl shadow-lg shadow-black/5 dark:shadow-black/20 hover:shadow-lg hover:shadow-black/8 dark:hover:shadow-black/25 transition-all duration-200 p-2 sm:p-3 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/5">
 <textarea
 className="flex-1 resize-none outline-none p-2 rounded-lg h-10 max-h-28 text-sm bg-slate-50/80 dark:bg-slate-700/40 hover:bg-slate-100/80 dark:hover:bg-slate-600/50 focus:bg-white dark:focus:bg-slate-700/80 transition-all duration-200 placeholder-slate-400 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100 border border-slate-200/40 dark:border-slate-600/30 focus:border-blue-400/50 dark:focus:border-blue-500/50 focus:ring-2 focus:ring-blue-400/20 dark:focus:ring-blue-500/20"
 placeholder="Ask about properties, pricing, amenities..."

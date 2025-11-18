@@ -1,6 +1,13 @@
 import DarkModeToggle from './DarkModeToggle'
+import { useAuth } from '../context/AuthContext'
 
-export default function Header({ isDark, onToggleDark }) {
+export default function Header({ isDark, onToggleDark, user }) {
+  const { signOut } = useAuth()
+
+  const handleLogout = async () => {
+    await signOut()
+  }
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur-lg bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-indigo-900/95 dark:from-slate-950/95 dark:via-slate-900/95 dark:to-slate-950/95 border-b border-white/5 dark:border-slate-700/20 shadow-sm">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-2.5">
@@ -17,6 +24,20 @@ export default function Header({ isDark, onToggleDark }) {
             </div>
           </div>
           <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+            {user && (
+              <div className="flex items-center gap-3">
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs text-blue-200/80 dark:text-blue-300/80">Logged in as</p>
+                  <p className="text-sm text-white font-medium truncate max-w-xs">{user.email}</p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 text-sm font-medium text-white bg-red-600/80 hover:bg-red-700 rounded-lg transition-colors active:scale-95"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
             <DarkModeToggle isDark={isDark} onToggle={onToggleDark} />
             <div className="text-xl hidden sm:block opacity-80">🏠</div>
           </div>
