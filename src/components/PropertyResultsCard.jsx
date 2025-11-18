@@ -130,7 +130,7 @@ export default function PropertyResultsCard({ properties = [], area, onQuickActi
 
               {/* Address/Title */}
               {prop.displayAddress && (
-                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2 leading-snug">
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-200 mb-2 leading-snug">
                   {prop.displayAddress}
                 </h4>
               )}
